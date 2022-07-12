@@ -2,7 +2,7 @@
 import { styled, Box, useTheme } from '@mui/system'
 import { themeShadows } from 'app/components/MatxTheme/themeColors'
 import { topBarHeight } from 'app/utils/constant'
-import Brand from '../../../components/Brand/Brand'
+import Brand from '../../Brand/Brand'
 import React, { useState } from 'react'
 import { Drawer, IconButton, Icon } from '@mui/material'
 import { convertHexToRGB } from 'app/utils/utils'
