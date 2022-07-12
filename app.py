@@ -15,8 +15,8 @@ def index():
 
 
 @app.route('/')
+@cross_origin()
 def serve():
-    @cross_origin()
     return send_from_directory(app.static_folder, 'index.html')
 
 
