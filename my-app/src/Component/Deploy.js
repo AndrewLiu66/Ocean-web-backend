@@ -2,6 +2,6 @@ import React from 'react'
 
 export const Deploy = () => {
     return (
-        <div>Hello</div>
+        <div>Hello22</div>
     )
 }
