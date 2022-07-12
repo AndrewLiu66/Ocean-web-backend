@@ -74,19 +74,6 @@ const Layout1Topbar = () => {
                     open={state[anchor]}
                     onClose={toggleDrawer(anchor, false)}
                 >
-                    <Box p={4} sx={{ width: 250 }}>
-                        <H4 sx={{ mt: 0, mb: 2 }}>
-                            Author:
-                        </H4>
-                        <Paragraph
-                            sx={{
-                                mt: 0,
-                                overflow: 'hidden'
-                            }}
-                        >
-                            Andrew Liu
-                        </Paragraph>
-                    </Box>
                     <Box p={4} sx={{ width: 250, paddingTop: '0px' }}>
                         <H4 sx={{ mt: 0, mb: 2 }}>
                             Intruction
