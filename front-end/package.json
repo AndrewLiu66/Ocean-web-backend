@@ -2,7 +2,7 @@
     "name": "matx-react-pro",
     "version": "3.3.0",
     "private": true,
-    "proxy": "https://flask-test-12344.herokuapp.com/",
+    "proxy": "http://127.0.0.1:5000",
     "dependencies": {
         "@auth0/auth0-spa-js": "^1.19.2",
         "@emotion/react": "^11.5.0",

@@ -1,9 +1,22 @@
 from flask import Flask, request
 from flask.helpers import send_from_directory
 from flask_cors import CORS, cross_origin
+from graph import getInitGraph
+import boto3
+from config import S3_BUCKET, S3_key, S3_SECRET
 
-app = Flask(__name__, static_folder="front-end/build", static_url_path="")
-CORS(app)
+
+def download_file(file_name, bucket):
+    """
+    Function to download a given file from an S3 bucket
+    """
+    s3 = boto3.resource('s3')
+    output = f"downloads/{file_name}"
+    s3.Bucket(bucket).download_file(file_name, output)
+    return output
+
+
+temp = download_file("lf_specs.zarr", "ocean-data-lab")
 
 
 @app.route('/api', methods=['GET'])
@@ -22,19 +35,6 @@ def getInit():
     endDate = request_data['endDate']
     location = request_data['location']
     return getInitGraph(startDate, endDate, location)
-
-
-def getInitGraph(startDate, endDate, location):
-    # look at 10 specific days of data
-    starttime = pd.Timestamp(startDate)
-    endtime = pd.Timestamp(endDate)
-    base_data = specs[location]
-    data_chunk = base_data.loc[starttime:endtime, :]
-    graph = data_chunk.hvplot(
-        x='time', y='frequency', rasterize=True, cmap='jet')
-    plot = hv.render(graph)
-    jso = json.dumps(json_item(plot))
-    return jso
 
 
 @app.route('/')
