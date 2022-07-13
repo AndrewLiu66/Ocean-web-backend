@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask.helpers import send_from_directory
 from flask_cors import CORS, cross_origin
 
@@ -12,6 +12,29 @@ def index():
     return {
         "tutorial": "Flask React Heroku"
     }
+
+
+@app.route('/api/getInitGraph', methods=['POST'])
+@cross_origin()
+def getInit():
+    request_data = request.get_json()
+    startDate = request_data['startDate']
+    endDate = request_data['endDate']
+    location = request_data['location']
+    return getInitGraph(startDate, endDate, location)
+
+
+def getInitGraph(startDate, endDate, location):
+    # look at 10 specific days of data
+    starttime = pd.Timestamp(startDate)
+    endtime = pd.Timestamp(endDate)
+    base_data = specs[location]
+    data_chunk = base_data.loc[starttime:endtime, :]
+    graph = data_chunk.hvplot(
+        x='time', y='frequency', rasterize=True, cmap='jet')
+    plot = hv.render(graph)
+    jso = json.dumps(json_item(plot))
+    return jso
 
 
 @app.route('/')
