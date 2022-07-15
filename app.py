@@ -2,21 +2,9 @@ from flask import Flask, request
 from flask.helpers import send_from_directory
 from flask_cors import CORS, cross_origin
 from graph import getInitGraph
-import boto3
-from config import S3_BUCKET, S3_key, S3_SECRET
 
-
-def download_file(file_name, bucket):
-    """
-    Function to download a given file from an S3 bucket
-    """
-    s3 = boto3.resource('s3')
-    output = f"downloads/{file_name}"
-    s3.Bucket(bucket).download_file(file_name, output)
-    return output
-
-
-temp = download_file("lf_specs.zarr", "ocean-data-lab")
+app = Flask(__name__, static_folder="front-end/build", static_url_path="")
+CORS(app)
 
 
 @app.route('/api', methods=['GET'])
