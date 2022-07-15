@@ -32,6 +32,11 @@ const ButtonBox = styled(Box)(() => ({
     alignItems: 'center',
 }))
 
+const StyledButton = styled(Button)(() => ({
+    width: '130px',
+    marginRight: '10px'
+}))
+
 const ChartHeader = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -44,8 +49,8 @@ const ChartHeader = styled(Box)(({ theme }) => ({
 }))
 
 const AnalyticsRoot = styled(Card)(({ theme }) => ({
-    [theme.breakpoints.down('lg')]: {
-        maxWidth: '80%',
+    [theme.breakpoints.down('md')]: {
+        maxWidth: '90%'
     },
     [theme.breakpoints.down('sm')]: {
         maxWidth: 460,
@@ -147,7 +152,7 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
             open={open}
             sx={{ zIndex: 101 }}
         >
-            <AnalyticsRoot sx={{ maxWidth: '50%' }} >
+            <AnalyticsRoot sx={{ minWidth: '60%' }} >
 
                 <ChartHeader>
                     <H3>{currentLocation} Hydrophone Visualization</H3>
@@ -156,41 +161,38 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                     </IconButton>
                 </ChartHeader>
 
-                <Grid container p={4} pb={0}>
+                <Grid container spacing={1} p={4} pb={0}>
+                    <Grid item lg={12} md={12} sm={12} xs={12}>
+                        <ButtonBox sx={{
+                            '& .MuiTextField-root': { m: 1, width: '25ch' },
+                        }}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="Start Date"
+                                    value={startDate}
+                                    onChange={(newValue) => {
+                                        setStartDate(newValue);
+                                    }}
+                                    minDate={new Date(2015, 0, 14)}
+                                    maxDate={new Date(2020, 11, 31)}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </LocalizationProvider>
 
-                    <Grid item lg={3} md={3} sm={12} xs={12}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                label="Start Date"
-                                value={startDate}
-                                onChange={(newValue) => {
-                                    setStartDate(newValue);
-                                }}
-                                minDate={new Date(2015, 0, 14)}
-                                maxDate={new Date(2020, 11, 31)}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                        </LocalizationProvider>
-                    </Grid>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="End Date"
+                                    value={endDate}
+                                    onChange={(newValue) => {
+                                        setEndDate(newValue);
+                                    }}
+                                    minDate={new Date(2015, 0, 14)}
+                                    maxDate={new Date(2020, 11, 31)}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </LocalizationProvider>
 
-                    <Grid item lg={3} md={3} sm={12} xs={12}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                label="End Date"
-                                value={endDate}
-                                onChange={(newValue) => {
-                                    setEndDate(newValue);
-                                }}
-                                minDate={new Date(2015, 0, 14)}
-                                maxDate={new Date(2020, 11, 31)}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                        </LocalizationProvider>
-                    </Grid>
-
-                    <Grid item lg={3} md={3} sm={12} xs={12}>
-                        <Box>
-                            <FormControl fullWidth>
+                            <FormControl fullWidth sx={{ m: 1, width: '25ch' }}>
                                 <InputLabel id="demo-simple-select-label">Type</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
@@ -205,79 +207,78 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                                     <MenuItem value={'Octave Band Median/Mean'}>Octave Band Median/Mean</MenuItem>
                                 </Select>
                             </FormControl>
-                        </Box>
-                    </Grid>
 
-                    {graphType === 'Octave Band Median/Mean' ?
-                        <Grid item lg={3} md={3} sm={12} xs={12}>
-                            <Box>
+                            {graphType === 'Octave Band Median/Mean' ?
                                 <TextField
                                     required
                                     value={frequency}
                                     id="outlined-required"
                                     label="Required frequency"
                                     onChange={handleFrequencyChange}
-                                />
-                            </Box>
-                        </Grid> :
-                        <Grid item lg={3} md={3} sm={12} xs={12}>
-                            <Box>
+                                /> :
                                 <TextField
                                     disabled
                                     defaultValue="0"
                                     id="outlined-required"
                                     label="No frequency needed"
                                 />
-                            </Box>
-                        </Grid>
-                    }
-
-                    {/* <Grid item md={12} sm={12} xs={12}>
-                        <ButtonBox sx={{ mt: 1 }}>
-                            <Button variant="contained" component="span"
-                                onClick={handleUpdateGraph}
-                            >
-                                <AutorenewIcon />
-                                Update Graph
-                                </Button>
-                            <Button variant="contained" component="span"
-                                onClick={() => download()}
-                                sx={{ backgroundColor: "#008255", ml: 1 }}
-                            >
-                                <DownloadIcon sx={{ mr: 1 }} />
-                                Download CSV
-                            </Button>
-
-                            {graphType === 'SPDF' ?
-                                <Button variant="contained" sx={{ backgroundColor: "#008255", ml: 1 }}>
-                                    <DownloadIcon sx={{ mr: 1 }} />
-                                    <a href={`data:image/jpeg;base64,${image}`} download={`${currentLocation + "-" + currType + "-" + handleDate(startDate) + '-' + handleDate(endDate)}.jpg`}>
-                                        Download .jpg
-                                    </a>
-                                </Button> :
-                                <Button disabled variant="contained" sx={{ backgroundColor: "#21b6ae", ml: 1 }}>
-                                    <DownloadIcon sx={{ mr: 1 }} />
-                                    Download .jpg
-                                </Button>
                             }
                         </ButtonBox>
-                    </Grid> */}
+                    </Grid>
 
-                    <Grid item md={3} sm={12} xs={12}></Grid>
-                    {loading && <Grid item md={12} sm={12} xs={12} alignItems="center" justifyContent="center" textAlign="center" ml="-18px">
-                        <CircularProgress
-                            size={24}
-                            className="buttonProgress"
-                        />
-                    </Grid>}
+                </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
+                <Grid container spacing={1} p={4} pt={1}>
+                    <Grid item lg={6} md={6} sm={12} xs={12}>
+                        <ButtonBox sx={{ pl: '8px' }}>
+                            <StyledButton variant="contained" component="span"
+                                onClick={handleUpdateGraph}
+                            >
+                                <AutorenewIcon sx={{ mr: 1 }} />
+                                Update
+                            </StyledButton>
+
+                            <StyledButton variant="contained" component="span"
+                                onClick={() => download()}
+                                sx={{ backgroundColor: "#008255" }}
+                            >
+                                <DownloadIcon sx={{ mr: 1 }} />
+                                CSV
+                            </StyledButton>
+
+                            {currType === 'SPDF' ?
+                                <StyledButton variant="contained" sx={{ backgroundColor: "#008255" }}>
+                                    <DownloadIcon sx={{ mr: 1 }} />
+                                    <a href={`data:image/jpeg;base64,${image}`} download={`${currentLocation + "-" + currType + "-" + handleDate(startDate) + '-' + handleDate(endDate)}.jpg`}>
+                                        jpg
+                                    </a>
+                                </StyledButton> :
+                                <StyledButton disabled variant="contained" sx={{ backgroundColor: "#21b6ae" }}>
+                                    <DownloadIcon sx={{ mr: 1 }} />
+                                    jpg
+                                </StyledButton>
+                            }
+
+                        </ButtonBox>
+                    </Grid>
+                </Grid>
+
+                <Grid container>
+                    {loading &&
+                        <Grid item lg={12} md={12} sm={12} xs={12} alignItems="center" justifyContent="center" textAlign="center" ml="-18px">
+                            <CircularProgress
+                                size={24}
+                                className="buttonProgress"
+                            />
+                        </Grid>
+                    }
+                    <Grid item lg={12} md={12} sm={12} xs={12}>
                         {currType === 'SPDF' && image !== '' && <FlexBox>
                             <IMG src={`data:image/jpg;base64,${image}`} />
                         </FlexBox>}
                     </Grid>
-                    {/* Octave */}
                 </Grid>
+
                 {(currType === 'Spectrogram' || currType === 'Octave Band Median/Mean') && <FlexBox sx={{ overflow: 'auto' }} id="outer"></FlexBox>}
 
             </AnalyticsRoot >
