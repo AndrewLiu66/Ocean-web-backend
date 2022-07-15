@@ -16,6 +16,8 @@ import {
 import Backdrop from '@mui/material/Backdrop';
 import axios from 'axios'
 import fileDownload from 'js-file-download'
+import DownloadIcon from '@mui/icons-material/Download';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 const FlexBox = styled(Box)(() => ({
     display: 'flex',
@@ -42,6 +44,9 @@ const ChartHeader = styled(Box)(({ theme }) => ({
 }))
 
 const AnalyticsRoot = styled(Card)(({ theme }) => ({
+    [theme.breakpoints.down('lg')]: {
+        maxWidth: '80%',
+    },
     [theme.breakpoints.down('sm')]: {
         maxWidth: 460,
     },
@@ -58,7 +63,9 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
     const { palette } = useTheme()
     const dispatch = useDispatch()
     const textPrimary = palette.text.primary
+    // currType = type after clicking update button
     const [currType, setCurrType] = useState('Spectrogram');
+    // graphType = type after changing in the menu
     const [graphType, setGraphType] = useState('Spectrogram');
     const { initGraph } = useSelector((state) => state.graph)
     const [loading, setLoading] = useState(false)
@@ -76,7 +83,7 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
     }, [])
 
     useEffect(() => {
-        if (currType === 'Spectrogram')
+        if (currType === 'Spectrogram' || currType === 'Octave Band Median/Mean')
         {
             if (Object.keys(initGraph).length !== 0)
             {
@@ -113,13 +120,12 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
     };
 
     const handleUpdateGraph = () => {
-        console.log(frequency)
         setLoading(true)
         setCurrType(graphType)
         let start = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate()
         let end = endDate.getFullYear() + '-' + (endDate.getMonth() + 1) + '-' + endDate.getDate()
         const request_location = currentLocation.replace(" ", "_").toLowerCase()
-        dispatch(getUpdatedGraph(start, end, graphType, request_location))
+        dispatch(getUpdatedGraph(start, end, graphType, request_location, frequency))
     }
 
     const download = () => {
@@ -135,20 +141,24 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
         return dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
     }
 
+    console.log(initGraph)
     return (
         <Backdrop
             open={open}
             sx={{ zIndex: 101 }}
         >
             <AnalyticsRoot sx={{ maxWidth: '50%' }} >
+
                 <ChartHeader>
                     <H3>{currentLocation} Hydrophone Visualization</H3>
                     <IconButton onClick={handleClose}>
                         <Icon sx={{ color: textPrimary }}>close</Icon>
                     </IconButton>
                 </ChartHeader>
-                <Grid container spacing={2} p={4} pb={0}>
-                    <Grid item md={3} sm={12} xs={12}>
+
+                <Grid container p={4} pb={0}>
+
+                    <Grid item lg={3} md={3} sm={12} xs={12}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 label="Start Date"
@@ -162,7 +172,8 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                             />
                         </LocalizationProvider>
                     </Grid>
-                    <Grid item md={3} sm={12} xs={12}>
+
+                    <Grid item lg={3} md={3} sm={12} xs={12}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 label="End Date"
@@ -177,8 +188,7 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                         </LocalizationProvider>
                     </Grid>
 
-
-                    <Grid item md={3} sm={12} xs={12}>
+                    <Grid item lg={3} md={3} sm={12} xs={12}>
                         <Box>
                             <FormControl fullWidth>
                                 <InputLabel id="demo-simple-select-label">Type</InputLabel>
@@ -197,41 +207,62 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                             </FormControl>
                         </Box>
                     </Grid>
-                    <Grid item md={3} sm={12} xs={12}>
-                        <Box>
-                            <TextField
-                                required
-                                value={frequency}
-                                id="outlined-required"
-                                label="Required frequency"
-                                defaultValue="50"
-                                onChange={handleFrequencyChange}
-                            />
-                        </Box>
-                    </Grid>
 
-                    <Grid item md={12} sm={12} xs={12}>
+                    {graphType === 'Octave Band Median/Mean' ?
+                        <Grid item lg={3} md={3} sm={12} xs={12}>
+                            <Box>
+                                <TextField
+                                    required
+                                    value={frequency}
+                                    id="outlined-required"
+                                    label="Required frequency"
+                                    onChange={handleFrequencyChange}
+                                />
+                            </Box>
+                        </Grid> :
+                        <Grid item lg={3} md={3} sm={12} xs={12}>
+                            <Box>
+                                <TextField
+                                    disabled
+                                    defaultValue="0"
+                                    id="outlined-required"
+                                    label="No frequency needed"
+                                />
+                            </Box>
+                        </Grid>
+                    }
+
+                    {/* <Grid item md={12} sm={12} xs={12}>
                         <ButtonBox sx={{ mt: 1 }}>
                             <Button variant="contained" component="span"
                                 onClick={handleUpdateGraph}
                             >
+                                <AutorenewIcon />
                                 Update Graph
                                 </Button>
                             <Button variant="contained" component="span"
                                 onClick={() => download()}
-                                sx={{ backgroundColor: "#21b6ae", ml: 1 }}
+                                sx={{ backgroundColor: "#008255", ml: 1 }}
                             >
+                                <DownloadIcon sx={{ mr: 1 }} />
                                 Download CSV
-                                </Button>
-                            {currType === 'SPDF' && <Button variant="contained" sx={{ backgroundColor: "#21b6ae", mt: 1, ml: 1 }}>
-                                <a href={`data:image/jpeg;base64,${image}`} download={`${currentLocation + "-" + currType + "-" + handleDate(startDate) + '-' + handleDate(endDate)}.jpg`}>
-                                    Download .jpg
-                                 </a>
-                            </Button>}
-                        </ButtonBox>
-                    </Grid>
+                            </Button>
 
-                    {/* SPFDF */}
+                            {graphType === 'SPDF' ?
+                                <Button variant="contained" sx={{ backgroundColor: "#008255", ml: 1 }}>
+                                    <DownloadIcon sx={{ mr: 1 }} />
+                                    <a href={`data:image/jpeg;base64,${image}`} download={`${currentLocation + "-" + currType + "-" + handleDate(startDate) + '-' + handleDate(endDate)}.jpg`}>
+                                        Download .jpg
+                                    </a>
+                                </Button> :
+                                <Button disabled variant="contained" sx={{ backgroundColor: "#21b6ae", ml: 1 }}>
+                                    <DownloadIcon sx={{ mr: 1 }} />
+                                    Download .jpg
+                                </Button>
+                            }
+                        </ButtonBox>
+                    </Grid> */}
+
                     <Grid item md={3} sm={12} xs={12}></Grid>
                     {loading && <Grid item md={12} sm={12} xs={12} alignItems="center" justifyContent="center" textAlign="center" ml="-18px">
                         <CircularProgress
@@ -239,6 +270,7 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                             className="buttonProgress"
                         />
                     </Grid>}
+
                     <Grid item md={12} sm={12} xs={12}>
                         {currType === 'SPDF' && image !== '' && <FlexBox>
                             <IMG src={`data:image/jpg;base64,${image}`} />
@@ -247,6 +279,7 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                     {/* Octave */}
                 </Grid>
                 {(currType === 'Spectrogram' || currType === 'Octave Band Median/Mean') && <FlexBox sx={{ overflow: 'auto' }} id="outer"></FlexBox>}
+
             </AnalyticsRoot >
         </Backdrop >
     )

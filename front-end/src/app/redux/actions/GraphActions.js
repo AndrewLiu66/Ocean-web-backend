@@ -15,9 +15,9 @@ export const getInitialGraph = (startDate, endDate, location) => (dispatch) => {
         })
 }
 
-export const getUpdatedGraph = (startDate, endDate, graphType, location) => (dispatch) => {
+export const getUpdatedGraph = (startDate, endDate, graphType, location, frequency) => (dispatch) => {
     axios
-        .post('/api/getUpdatedGraph', { startDate, endDate, graphType, location })
+        .post('/api/getUpdatedGraph', { startDate, endDate, graphType, location, frequency })
         .then((res) => {
             dispatch({
                 type: GET_UPDATE_GRAPH,

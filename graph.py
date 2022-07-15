@@ -15,6 +15,9 @@ import io
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 import base64
 from flask import send_file, jsonify
+import hvplot.pandas  # noqa
+from holoviews import opts
+
 fn = 'lf_specs.zarr'
 specs = xr.open_dataset(fn)
 matplotlib.use('Agg')
@@ -39,7 +42,7 @@ def getUpdatedGraph(startDate, endDate, graphType, location, f0=50):
     elif graphType == 'SPDF':
         return generateSPDF(startDate, endDate, location)
     else:
-        return generateOctaveGraph(f0, location, startDate, endDate)
+        return generateOctaveGraph(location, startDate, endDate, f0)
 
 
 def generateSpectrogram(startDate, endDate, location):
@@ -65,28 +68,6 @@ def generateSPDF(startDate, endDate, location):
 
 def get_spdf(spec, fs_hz, fmax=None, spl_bins=np.linspace(0, 120, 481),
              percentiles=[1, 5, 10, 50, 90, 95, 99]):
-    """
-    get_spdf - calculate the spectral probability distribution function for a given spectrogram slice
-
-    Parameters
-    ----------
-    spec_like : xarray.DataArray
-        DataArray with dimensions ['frequency', 'time']
-    fs_hz : float
-        sampling frequency in Hz
-    fmax : float
-        frequency up to which spectral PDF is computed
-    spl_bins : np.array
-        histogram bins for spectral level default is 481 bins between 0 and 120 dB rel uPa^2/Hz
-    percentiles : list
-        percentiles that will be computed along with the PDF
-
-    Outputs
-    -------
-    spdf_dct : dictionary
-        dictionary with keys ['freq', 'spl', 'pdf', 'number_psd'], and every percentile passed as an input
-    """
-
     # set fmax
     if fmax is None:
         fmax = spec.frequency[-1]
@@ -115,29 +96,6 @@ def get_spdf(spec, fs_hz, fmax=None, spl_bins=np.linspace(0, 120, 481),
 
 
 def plot_spdf(spdf, vmin=0.003, vmax=0.2, vdelta=0.0025, save=False, filename=None, log=True, title='Spectral PDF'):
-    '''
-    plot_spdf - plot the spectral probability distributino function with matplotlib
-
-    Parameters
-    ----------
-    spdf : dictionary
-        dictionary structured as the same as output of get_spdf
-    vmin : float
-        passed to plt.contourf()
-    vmax : float
-        passed to plt.contourf()
-    vdelta : float
-        passed to plt.contourf()
-    save : bool
-        whether or not to save the figure to file
-    filename : string
-        name of file if file is to be saved
-    log : bool
-        whether or not to plot x scale on log or linear scale (True means log)
-    title : string
-        title of plot
-
-    '''
     # import some functions form matplotlib
     from matplotlib.colors import Normalize
     import matplotlib.colors as colors
@@ -213,9 +171,10 @@ def generateDfForOctaveBox(f0, location, startDate, endDate):
     return ovtave_dataframe
 
 
-def generateOctaveGraph(f0, location, startDate, endDate):
-    import hvplot.pandas  # noqa
-    from holoviews import opts
+def generateOctaveGraph(location, startDate, endDate, f0):
+    # import hvplot.pandas  # noqa
+    # from holoviews import opts
+
     df_octave = generateDfForOctaveBox(f0, location, startDate, endDate)
     boxplot = df_octave.hvplot.box(y=location, by='date', ylabel=location,
                                    width=900, height=400, legend=False, outlier_color='white')
