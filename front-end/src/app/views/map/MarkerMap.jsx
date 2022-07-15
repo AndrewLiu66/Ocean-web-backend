@@ -106,6 +106,7 @@ function MarkerMap() {
 
    return (
       <Map
+         style={{ height: '100vh' }}
          initialViewState={{
             latitude: 46.1651,
             longitude: -123.9237,
@@ -120,14 +121,11 @@ function MarkerMap() {
             <Layer {...layerStyle} />
          </Source>
 
-         <GeolocateControl position="top-left" />
+         {/* <GeolocateControl position="top-left" />
          <FullscreenControl position="top-left" />
-         <NavigationControl position="top-left" />
-         <ScaleControl />
+         <NavigationControl position="top-left" /> */}
+         {/* <ScaleControl /> */}
          <Snackbar open={open} autoHideDuration={10000} onClose={handleClose}>
-            {/* <Alert onClose={handleClose} everity="info" sx={{ width: '100%' }}>
-               This is a success message!
-            </Alert> */}
             <Alert>Click 1 of the 5 pins to explore the Hydrophone!</Alert>
          </Snackbar>
          {pins}
@@ -147,7 +145,6 @@ function MarkerMap() {
                   <Box sx={{ fontSize: '14px' }}>
                      {popupInfo.location}
                   </Box>
-                  {/* <img width="100%" src={popupInfo.image} /> */}
                   <Button variant="contained"
                      color="primary" size="small" onClick={() => handleOpenDialog(true, popupInfo.location)}>Explore</Button>
                </Popup >
