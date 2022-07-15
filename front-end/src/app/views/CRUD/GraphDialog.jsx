@@ -25,6 +25,11 @@ const FlexBox = styled(Box)(() => ({
     marginTop: '0px !important'
 }))
 
+const ButtonBox = styled(Box)(() => ({
+    display: 'flex',
+    alignItems: 'center',
+}))
+
 const ChartHeader = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -58,6 +63,7 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
     const { initGraph } = useSelector((state) => state.graph)
     const [loading, setLoading] = useState(false)
     const [image, setImage] = useState('')
+    const [frequency, setFrequency] = useState(50)
 
     useEffect(() => {
         setLoading(true)
@@ -102,8 +108,12 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
         setGraphType(event.target.value);
     };
 
+    const handleFrequencyChange = (event) => {
+        setFrequency(event.target.value);
+    };
 
     const handleUpdateGraph = () => {
+        console.log(frequency)
         setLoading(true)
         setCurrType(graphType)
         let start = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate()
@@ -166,6 +176,8 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                             />
                         </LocalizationProvider>
                     </Grid>
+
+
                     <Grid item md={3} sm={12} xs={12}>
                         <Box>
                             <FormControl fullWidth>
@@ -185,37 +197,40 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                             </FormControl>
                         </Box>
                     </Grid>
-
                     <Grid item md={3} sm={12} xs={12}>
-                        <Button variant="contained" component="span"
-                            onClick={handleUpdateGraph}
-                            sx={{ mt: 1 }}
-                        >
-                            Update Graph
-                        </Button>
+                        <Box>
+                            <TextField
+                                required
+                                value={frequency}
+                                id="outlined-required"
+                                label="Required frequency"
+                                defaultValue="50"
+                                onChange={handleFrequencyChange}
+                            />
+                        </Box>
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                        <Button variant="contained" component="span"
-                            onClick={() => download()}
-                            sx={{ mt: 1, backgroundColor: "#21b6ae" }}
-                        >
-                            Download .zip
-                        </Button>
-                        {/* create SPDF */}
-                        {currType === 'SPDF' && <Button variant="contained" sx={{ backgroundColor: "#21b6ae", mt: 1, ml: 1 }}>
-                            <a href={`data:image/jpeg;base64,${image}`} download={`${currentLocation + "-" + currType + "-" + handleDate(startDate) + '-' + handleDate(endDate)}.jpg`}>
-                                Download .jpg
-                            </a>
-                        </Button>}
-                        {/* Octave */}
-                        {currType === 'Octave Band Median/Mean' && <Button variant="contained" sx={{ backgroundColor: "#21b6ae", mt: 1, ml: 1 }}>
-                            <a href={`data:image/jpeg;base64,${image}`} download={`${currentLocation + "-" + currType + "-" + handleDate(startDate) + '-' + handleDate(endDate)}.jpg`}>
-                                Download .jpg
-                            </a>
-                        </Button>}
-
+                        <ButtonBox sx={{ mt: 1 }}>
+                            <Button variant="contained" component="span"
+                                onClick={handleUpdateGraph}
+                            >
+                                Update Graph
+                                </Button>
+                            <Button variant="contained" component="span"
+                                onClick={() => download()}
+                                sx={{ backgroundColor: "#21b6ae", ml: 1 }}
+                            >
+                                Download CSV
+                                </Button>
+                            {currType === 'SPDF' && <Button variant="contained" sx={{ backgroundColor: "#21b6ae", mt: 1, ml: 1 }}>
+                                <a href={`data:image/jpeg;base64,${image}`} download={`${currentLocation + "-" + currType + "-" + handleDate(startDate) + '-' + handleDate(endDate)}.jpg`}>
+                                    Download .jpg
+                                 </a>
+                            </Button>}
+                        </ButtonBox>
                     </Grid>
+
                     {/* SPFDF */}
                     <Grid item md={3} sm={12} xs={12}></Grid>
                     {loading && <Grid item md={12} sm={12} xs={12} alignItems="center" justifyContent="center" textAlign="center" ml="-18px">
@@ -229,10 +244,9 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                             <IMG src={`data:image/jpg;base64,${image}`} />
                         </FlexBox>}
                     </Grid>
-                    {/* mean and medium */}
+                    {/* Octave */}
                 </Grid>
-                {currType === 'Spectrogram' && <FlexBox sx={{ overflow: 'auto' }} id="outer">
-                </FlexBox>}
+                {(currType === 'Spectrogram' || currType === 'Octave Band Median/Mean') && <FlexBox sx={{ overflow: 'auto' }} id="outer"></FlexBox>}
             </AnalyticsRoot >
         </Backdrop >
     )

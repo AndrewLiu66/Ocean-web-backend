@@ -12,10 +12,6 @@ export const AllPages = () => {
                 ...dashboardRoutes,
             ],
         },
-        {
-            path: '/',
-            element: <Navigate to="dashboard/default" />,
-        },
     ]
     return all_routes
 }

@@ -74,7 +74,7 @@ const Layout1Topbar = () => {
                     open={state[anchor]}
                     onClose={toggleDrawer(anchor, false)}
                 >
-                    <Box p={4} sx={{ width: 250, paddingTop: '0px' }}>
+                    <Box p={4} sx={{ width: 250, paddingTop: '20px' }}>
                         <H4 sx={{ mt: 0, mb: 2 }}>
                             Intruction
                         </H4>
@@ -92,7 +92,7 @@ const Layout1Topbar = () => {
                         <H4 sx={{ mt: 0, mb: 2 }}>
                             Notice
                         </H4>
-                        <Paragraph
+                        <Box
                             sx={{
                                 mt: 0,
                                 mb: 1,
@@ -105,7 +105,7 @@ const Layout1Topbar = () => {
                             <div></div>
                             <br />
                             2. click the download button to download the data that's used to make the visualization in csv format
-                        </Paragraph>
+                        </Box>
                     </Box>
                 </Drawer>
             </TopbarContainer>
