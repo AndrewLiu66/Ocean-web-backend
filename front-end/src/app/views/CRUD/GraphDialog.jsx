@@ -69,7 +69,6 @@ const AnalyticsRoot = styled(Card)(({ theme }) => ({
 
 const IMG = styled('img')(({ theme }) => ({
     borderRadius: '4px',
-    // width: '100%',
     [theme.breakpoints.down('sm')]: {
         width: '110%'
     },
