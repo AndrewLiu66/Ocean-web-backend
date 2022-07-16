@@ -249,16 +249,16 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                                 CSV
                             </StyledButton>
 
-                            {currType === 'SPDF' ?
+                            {(currType === 'SPDF' && graphType === 'SPDF' && loading === false) ?
                                 <StyledButton variant="contained" sx={{ backgroundColor: "#008255" }}>
                                     <DownloadIcon sx={{ mr: 1 }} />
                                     <a href={`data:image/jpeg;base64,${image}`} download={`${currentLocation + "-" + currType + "-" + handleDate(startDate) + '-' + handleDate(endDate)}.jpg`}>
-                                        jpg
+                                        JPG
                                     </a>
                                 </StyledButton> :
                                 <StyledButton disabled variant="contained" sx={{ backgroundColor: "#21b6ae" }}>
                                     <DownloadIcon sx={{ mr: 1 }} />
-                                    jpg
+                                    JPG
                                 </StyledButton>
                             }
 
@@ -268,13 +268,14 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
 
                 <Grid container>
                     {loading &&
-                        <Grid item lg={12} md={12} sm={12} xs={12} alignItems="center" justifyContent="center" textAlign="center" ml="-18px">
+                        <Grid item lg={12} md={12} sm={12} xs={12} alignItems="center" justifyContent="center" textAlign="center" mb="20px">
                             <CircularProgress
                                 size={24}
                                 className="buttonProgress"
                             />
                         </Grid>
                     }
+
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                         {currType === 'SPDF' && image !== '' && <FlexBox>
                             <IMG src={`data:image/jpg;base64,${image}`} />

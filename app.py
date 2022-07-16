@@ -51,7 +51,6 @@ def getUpdate():
     location = request_data['location']
     graphType = request_data['graphType']
     # for Octave Band only
-    print(request_data)
     f0 = request_data['frequency']
     return getUpdatedGraph(startDate, endDate, graphType, location, f0)
 
