@@ -35,6 +35,19 @@ const TopbarContainer = styled(Box)(({ theme }) => ({
     },
 }))
 
+const ContentBox = styled('div')(({ theme }) => ({
+    padding: '40px',
+    width: '350px',
+    [theme.breakpoints.down('sm')]: {
+        width: '280px',
+    },
+}))
+
+const ChunkBox = styled('div')(() => ({
+    marginBottom: '40px'
+}))
+
+
 const Layout1Topbar = () => {
     const anchor = 'right'
     const [state, setState] = useState({
@@ -73,40 +86,54 @@ const Layout1Topbar = () => {
                     anchor={anchor}
                     open={state[anchor]}
                     onClose={toggleDrawer(anchor, false)}
+                    p={4}
                 >
-                    <Box p={4} sx={{ width: 250, paddingTop: '20px' }}>
-                        <H4 sx={{ mt: 0, mb: 2 }}>
-                            Intruction
-                        </H4>
-                        <Paragraph
-                            sx={{
-                                mt: 0,
-                                mb: 1,
-                                overflow: 'hidden'
-                            }}
-                        >
-                            There are 5 pins representing 5 different Hydrophones on the map. Feel free to click on each of them to explore related data visualzitions.
-                        </Paragraph>
-                    </Box>
-                    <Box p={4} sx={{ width: 250, paddingTop: '0px' }}>
-                        <H4 sx={{ mt: 0, mb: 2 }}>
-                            Notice
-                        </H4>
-                        <Box
-                            sx={{
-                                mt: 0,
-                                mb: 1,
-                                overflow: 'hidden'
-                            }}
-                        >
-                            For Spectrogram & Octave Band:
-                            <div></div>
-                            <br />1. feel free to download jpg of the graph by clicking the "save" icon on the right side of the graph.
-                            <div></div>
-                            <br />
-                            2. click the download button to download the data that's used to make the visualization in csv format
-                        </Box>
-                    </Box>
+                    <ContentBox>
+                        <ChunkBox>
+                            <H4 sx={{ mb: 1, fontWeight: 800 }}>
+                                Director
+                            </H4>
+                            <Paragraph
+                                sx={{
+                                    mt: 0,
+                                    mb: 1,
+                                    overflow: 'hidden'
+                                }}
+                            >
+                                Dr. Shima Abadi
+                            </Paragraph>
+                        </ChunkBox>
+
+                        <ChunkBox>
+                            <H4 sx={{ mb: 1, fontWeight: 800 }}>
+                                Intruction
+                            </H4>
+                            <Paragraph
+                                sx={{
+                                    mt: 0,
+                                    mb: 1,
+                                    overflow: 'hidden'
+                                }}
+                            >
+                                There are 5 pins representing 5 different Hydrophones on the map. Feel free to click on each of them to explore related data visualzitions.
+                            </Paragraph>
+                        </ChunkBox>
+
+                        <ChunkBox>
+                            <H4 sx={{ mb: 1, fontWeight: 800 }}>
+                                Notice
+                            </H4>
+                            <Box>
+                                For Spectrogram & Octave Band:
+                                <div></div>
+                                <br />1. feel free to download jpg of the graph by clicking the "save" icon on the right side of the graph.
+                                <div></div>
+                                <br />
+                                2. click the download button to download the data that's used to make the visualization in csv format
+                            </Box>
+                        </ChunkBox>
+                    </ContentBox>
+
                 </Drawer>
             </TopbarContainer>
         </TopbarRoot>

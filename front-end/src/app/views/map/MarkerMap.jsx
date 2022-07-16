@@ -17,21 +17,20 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { GET_INIT_GRAPH } from 'app/redux/actions/GraphActions.js'
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-
+import CityPin from "./CityPin";
 
 const TOKEN = 'pk.eyJ1IjoiYW5kcmV3bGl1MTIzNCIsImEiOiJjbDVjNTZpa2swZTBsM2NtdGludmRqNGN3In0.3WcKjr2AOAzmio8bLvV_kg'
-// const TOKEN = 'pk.eyJ1IjoiYW5kcmV3bGl1MTIzNCIsImEiOiJjbDN1cTlxemIwN3hwM2NuemxwaGRpMmx4In0.FzpJ24Ug-rLgqLRfO639XQ'
 const Alert = React.forwardRef(function Alert(props, ref) {
    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 
 const HYDROPHONES = [
-   { "location": "Slope Base", "image": "http://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Above_Gotham.jpg/240px-Above_Gotham.jpg", "latitude": 44.5153, "longitude": -125.39 },
-   { "location": "Axial Base", "image": "http://upload.wikimedia.org/wikipedia/commons/thumb/5/57/LA_Skyline_Mountains2.jpg/240px-LA_Skyline_Mountains2.jpg", "latitude": 45.8168, "longitude": -129.754 },
-   { "location": "Southern Hydrate", "image": "http://upload.wikimedia.org/wikipedia/commons/thumb/8/85/2008-06-10_3000x1000_chicago_skyline.jpg/240px-2008-06-10_3000x1000_chicago_skyline.jpg", "latitude": 44.5691, "longitude": -125.1479 },
-   { "location": "Central Caldera", "image": "http://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Aerial_views_of_the_Houston%2C_Texas%2C_28005u.jpg/240px-Aerial_views_of_the_Houston%2C_Texas%2C_28005u.jpg", "latitude": 45.9546, "longitude": -130.0089 },
-   { "location": "Eastern Caldera", "image": "http://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Downtown_Phoenix_Aerial_Looking_Northeast.jpg/207px-Downtown_Phoenix_Aerial_Looking_Northeast.jpg", "latitude": 45.9396, "longitude": -129.9738 },
+   { "location": "Slope Base", "latitude": 44.5153, "longitude": -125.39 },
+   { "location": "Axial Base", "latitude": 45.8168, "longitude": -129.754 },
+   { "location": "Southern Hydrate", "latitude": 44.5691, "longitude": -125.1479 },
+   { "location": "Central Caldera", "latitude": 45.9546, "longitude": -130.0089 },
+   { "location": "Eastern Caldera", "latitude": 45.9396, "longitude": -129.9738 },
 ]
 
 const layerStyle = {
@@ -94,7 +93,7 @@ function MarkerMap() {
                   setPopupInfo(city);
                }}
             >
-               <LocationOnIcon sx={{ color: '#35068c' }} fontSize="large"></LocationOnIcon>
+               <CityPin size={18} />
             </Marker>
          )),
       []
@@ -125,7 +124,7 @@ function MarkerMap() {
          <FullscreenControl position="top-left" />
          <NavigationControl position="top-left" /> */}
          {/* <ScaleControl /> */}
-         <Snackbar open={open} autoHideDuration={10000} onClose={handleClose}>
+         <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
             <Alert>Click 1 of the 5 pins to explore the Hydrophone!</Alert>
          </Snackbar>
          {pins}
@@ -139,14 +138,15 @@ function MarkerMap() {
                   onClose={() => setPopupInfo(null)}
                >
 
-                  <Box sx={{ fontSize: '16px' }} >
+                  <Box sx={{ fontSize: '16px', pb: 1 }} >
                      Loction:
                   </Box>
-                  <Box sx={{ fontSize: '14px' }}>
+                  <Box sx={{ fontSize: '14px', pb: 1 }}>
                      {popupInfo.location}
                   </Box>
                   <Button variant="contained"
-                     color="primary" size="small" onClick={() => handleOpenDialog(true, popupInfo.location)}>Explore</Button>
+                     color="primary" size="small" onClick={() => handleOpenDialog(true, popupInfo.location)}>Explore
+                  </Button>
                </Popup >
                {shouldOpenEditorDialog && (
                   <GraphDialog

@@ -15,8 +15,13 @@ import pandas as pd
 import xarray as xr
 from flask.helpers import send_from_directory
 
+import holoviews as hv
+
 app = Flask(__name__, static_folder="front-end/build", static_url_path="")
 CORS(app)
+
+fn = 'lf_specs.zarr'
+specs = xr.open_dataset(fn)
 
 
 @app.route('/api', methods=['GET'])
@@ -45,9 +50,9 @@ def getUpdate():
     endDate = request_data['endDate']
     location = request_data['location']
     graphType = request_data['graphType']
-    frequency = request_data['frequency']
-
-    return getUpdatedGraph(startDate, endDate, graphType, location)
+    # for Octave Band only
+    f0 = request_data['frequency']
+    return getUpdatedGraph(startDate, endDate, graphType, location, f0)
 
 
 @app.route('/api/downloads', methods=['POST'])
