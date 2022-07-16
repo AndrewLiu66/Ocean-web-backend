@@ -35,9 +35,12 @@ const TopbarContainer = styled(Box)(({ theme }) => ({
     },
 }))
 
-const ContentBox = styled('div')(() => ({
+const ContentBox = styled('div')(({ theme }) => ({
     padding: '40px',
-    width: '350px'
+    width: '350px',
+    [theme.breakpoints.down('sm')]: {
+        width: '280px',
+    },
 }))
 
 const ChunkBox = styled('div')(() => ({

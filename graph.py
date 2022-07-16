@@ -15,8 +15,11 @@ import io
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 import base64
 from flask import send_file, jsonify
-import hvplot.pandas  # noqa
+import hvplot.pandas
 from holoviews import opts
+from matplotlib.colors import Normalize
+import matplotlib.colors as colors
+from matplotlib.lines import Line2D
 
 fn = 'lf_specs.zarr'
 specs = xr.open_dataset(fn)
@@ -24,15 +27,7 @@ matplotlib.use('Agg')
 
 
 def getInitGraph(startDate, endDate, location):
-    starttime = pd.Timestamp(startDate)
-    endtime = pd.Timestamp(endDate)
-    base_data = specs[location]
-    data_chunk = base_data.loc[starttime:endtime, :]
-    graph = data_chunk.hvplot(
-        x='time', y='frequency', rasterize=True, cmap='jet')
-    plot = hv.render(graph)
-    jso = json.dumps(json_item(plot))
-    return jso
+    return generateSpectrogram(startDate, endDate, location)
 
 
 def getUpdatedGraph(startDate, endDate, graphType, location, f0=50):
@@ -50,7 +45,7 @@ def generateSpectrogram(startDate, endDate, location):
     base_data = specs[location]
     data_chunk = base_data.loc[starttime:endtime, :]
     graph = data_chunk.hvplot(
-        x='time', y='frequency', rasterize=True, cmap='jet')
+        x='time', y='frequency', rasterize=True, cmap='jet', width=900, height=400)
     plot = hv.render(graph)
     jso = json.dumps(json_item(plot))
     return jso
@@ -91,11 +86,6 @@ def get_spdf(spec, fs_hz, fmax=None, spl_bins=np.linspace(0, 120, 481),
 
 
 def plot_spdf(spdf, vmin=0.003, vmax=0.2, vdelta=0.0025, save=False, filename=None, log=True, title='Spectral PDF'):
-    # import some functions form matplotlib
-    from matplotlib.colors import Normalize
-    import matplotlib.colors as colors
-    from matplotlib.lines import Line2D
-
     cbarticks = np.arange(vmin, vmax+vdelta, vdelta)
     fig, ax = plt.subplots(figsize=(9, 5))
     im = ax.contourf(spdf['freq'], spdf['spl'], np.transpose(spdf['pdf']),

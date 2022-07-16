@@ -19,6 +19,7 @@ import fileDownload from 'js-file-download'
 import DownloadIcon from '@mui/icons-material/Download';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 
+
 const FlexBox = styled(Box)(() => ({
     display: 'flex',
     alignItems: 'center',
@@ -32,9 +33,12 @@ const ButtonBox = styled(Box)(() => ({
     alignItems: 'center',
 }))
 
-const StyledButton = styled(Button)(() => ({
+const StyledButton = styled(Button)(({ theme }) => ({
     width: '130px',
-    marginRight: '10px'
+    marginRight: '10px',
+    [theme.breakpoints.down('sm')]: {
+        fontSize: '12px'
+    },
 }))
 
 const ChartHeader = styled(Box)(({ theme }) => ({
@@ -49,17 +53,32 @@ const ChartHeader = styled(Box)(({ theme }) => ({
 }))
 
 const AnalyticsRoot = styled(Card)(({ theme }) => ({
+    [theme.breakpoints.down('lg')]: {
+        width: '90vw',
+        height: '80vh'
+    },
     [theme.breakpoints.down('md')]: {
-        maxWidth: '90%'
+        width: '90vw',
+        height: '85vh'
     },
     [theme.breakpoints.down('sm')]: {
-        maxWidth: 460,
+        width: '90vw',
+        height: '90vh'
     },
 }))
 
-const IMG = styled('img')(() => ({
-    width: '100%',
+const IMG = styled('img')(({ theme }) => ({
     borderRadius: '4px',
+    // width: '100%',
+    [theme.breakpoints.down('sm')]: {
+        width: '110%'
+    },
+}))
+
+const StyledH3 = styled('div')(() => ({
+    fontSize: "16px",
+    fontWeight: "500",
+    lineHeight: "1.5",
 }))
 
 const GraphDialog = ({ currentLocation, open, handleClose }) => {
@@ -146,23 +165,21 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
         return dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
     }
 
-    console.log(initGraph)
     return (
         <Backdrop
             open={open}
             sx={{ zIndex: 101 }}
         >
-            <AnalyticsRoot sx={{ minWidth: '60%' }} >
-
+            <AnalyticsRoot sx={{ width: '70vw', height: '80vh', overflow: 'scroll' }} >
                 <ChartHeader>
-                    <H3>{currentLocation} Hydrophone Visualization</H3>
+                    <StyledH3>{currentLocation} Hydrophone Visualization</StyledH3>
                     <IconButton onClick={handleClose}>
                         <Icon sx={{ color: textPrimary }}>close</Icon>
                     </IconButton>
                 </ChartHeader>
 
                 <Grid container spacing={1} p={4} pb={0} sx={{
-                    '& .MuiTextField-root': { m: 1, width: '100%' },
+                    '& .MuiTextField-root': { mb: 1, width: '100%' },
                 }}>
                     <Grid item lg={3} md={3} sm={6} xs={12}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -195,7 +212,7 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                     </Grid>
 
                     <Grid item lg={3} md={3} sm={6} xs={12}>
-                        <FormControl fullWidth sx={{ m: 1, width: '100%' }}>
+                        <FormControl fullWidth sx={{ mb: 1, width: '100%' }}>
                             <InputLabel id="demo-simple-select-label">Type</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -233,7 +250,7 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
 
                 <Grid container spacing={1} p={4} pt={1}>
                     <Grid item lg={6} md={6} sm={12} xs={12}>
-                        <ButtonBox sx={{ pl: '8px' }}>
+                        <ButtonBox>
                             <StyledButton variant="contained" component="span"
                                 onClick={handleUpdateGraph}
                             >
