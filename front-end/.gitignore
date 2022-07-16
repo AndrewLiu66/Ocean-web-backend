@@ -1,2 +1,8 @@
 /node_modules
 .vscode
+public
+config-overrides.js
+jsconfig.json
+package-lock.json
+package.json
+yarn.lock
