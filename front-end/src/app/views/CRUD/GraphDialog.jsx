@@ -161,71 +161,74 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
                     </IconButton>
                 </ChartHeader>
 
-                <Grid container spacing={1} p={4} pb={0}>
-                    <Grid item lg={12} md={12} sm={12} xs={12}>
-                        <ButtonBox sx={{
-                            '& .MuiTextField-root': { m: 1, width: '25ch' },
-                        }}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    label="Start Date"
-                                    value={startDate}
-                                    onChange={(newValue) => {
-                                        setStartDate(newValue);
-                                    }}
-                                    minDate={new Date(2015, 0, 14)}
-                                    maxDate={new Date(2020, 11, 31)}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </LocalizationProvider>
-
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    label="End Date"
-                                    value={endDate}
-                                    onChange={(newValue) => {
-                                        setEndDate(newValue);
-                                    }}
-                                    minDate={new Date(2015, 0, 14)}
-                                    maxDate={new Date(2020, 11, 31)}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
-                            </LocalizationProvider>
-
-                            <FormControl fullWidth sx={{ m: 1, width: '25ch' }}>
-                                <InputLabel id="demo-simple-select-label">Type</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={graphType}
-                                    label="Type"
-                                    defaultValue={"Spectrogram"}
-                                    onChange={handleChange}
-                                >
-                                    <MenuItem value={'Spectrogram'}>Spectrogram</MenuItem>
-                                    <MenuItem value={'SPDF'}>SPDF</MenuItem>
-                                    <MenuItem value={'Octave Band Median/Mean'}>Octave Band Median/Mean</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            {graphType === 'Octave Band Median/Mean' ?
-                                <TextField
-                                    required
-                                    value={frequency}
-                                    id="outlined-required"
-                                    label="Required frequency"
-                                    onChange={handleFrequencyChange}
-                                /> :
-                                <TextField
-                                    disabled
-                                    defaultValue="0"
-                                    id="outlined-required"
-                                    label="No frequency needed"
-                                />
-                            }
-                        </ButtonBox>
+                <Grid container spacing={1} p={4} pb={0} sx={{
+                    '& .MuiTextField-root': { m: 1, width: '100%' },
+                }}>
+                    <Grid item lg={3} md={3} sm={6} xs={12}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="Start Date"
+                                value={startDate}
+                                onChange={(newValue) => {
+                                    setStartDate(newValue);
+                                }}
+                                minDate={new Date(2015, 0, 14)}
+                                maxDate={new Date(2020, 11, 31)}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
                     </Grid>
 
+                    <Grid item lg={3} md={3} sm={6} xs={12}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="End Date"
+                                value={endDate}
+                                onChange={(newValue) => {
+                                    setEndDate(newValue);
+                                }}
+                                minDate={new Date(2015, 0, 14)}
+                                maxDate={new Date(2020, 11, 31)}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
+                    </Grid>
+
+                    <Grid item lg={3} md={3} sm={6} xs={12}>
+                        <FormControl fullWidth sx={{ m: 1, width: '100%' }}>
+                            <InputLabel id="demo-simple-select-label">Type</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={graphType}
+                                label="Type"
+                                defaultValue={"Spectrogram"}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value={'Spectrogram'}>Spectrogram</MenuItem>
+                                <MenuItem value={'SPDF'}>SPDF</MenuItem>
+                                <MenuItem value={'Octave Band Median/Mean'}>Octave Band Median/Mean</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item lg={3} md={3} sm={6} xs={12}>
+                        {graphType === 'Octave Band Median/Mean' ?
+                            <TextField
+                                required
+                                value={frequency}
+                                id="outlined-required"
+                                label="Required frequency"
+                                onChange={handleFrequencyChange}
+                            /> :
+                            <TextField
+                                disabled
+                                defaultValue="0"
+                                id="outlined-required"
+                                label="No frequency needed"
+                            />
+                        }
+                    </Grid>
                 </Grid>
 
                 <Grid container spacing={1} p={4} pt={1}>
