@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
     Card, Grid
 } from '@mui/material'
-import { H3 } from 'app/components/Typography'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -78,6 +77,10 @@ const StyledH3 = styled('div')(() => ({
     fontSize: "16px",
     fontWeight: "500",
     lineHeight: "1.5",
+}))
+
+const StyledDownload = styled('a')(() => ({
+    display: 'flex'
 }))
 
 const GraphDialog = ({ currentLocation, open, handleClose }) => {
@@ -160,10 +163,13 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
         });
     }
 
+
+
     const handleDate = (dt) => {
         return dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate();
     }
 
+    console.log(image)
     return (
         <Backdrop
             open={open}
@@ -267,10 +273,10 @@ const GraphDialog = ({ currentLocation, open, handleClose }) => {
 
                             {(currType === 'SPDF' && graphType === 'SPDF' && loading === false) ?
                                 <StyledButton variant="contained" sx={{ backgroundColor: "#008255" }}>
-                                    <DownloadIcon sx={{ mr: 1 }} />
-                                    <a href={`data:image/jpeg;base64,${image}`} download={`${currentLocation + "-" + currType + "-" + handleDate(startDate) + '-' + handleDate(endDate)}.jpg`}>
+                                    <StyledDownload href={`data:image/jpeg;base64,${image}`} download={`${currentLocation + "-" + currType + "-" + handleDate(startDate) + '-' + handleDate(endDate)}.jpg`}>
+                                        <DownloadIcon sx={{ mr: 1 }} />
                                         JPG
-                                    </a>
+                                    </StyledDownload>
                                 </StyledButton> :
                                 <StyledButton disabled variant="contained" sx={{ backgroundColor: "#21b6ae" }}>
                                     <DownloadIcon sx={{ mr: 1 }} />

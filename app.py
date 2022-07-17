@@ -17,7 +17,7 @@ from flask.helpers import send_from_directory
 
 import holoviews as hv
 
-app = Flask(__name__, static_folder="front-end/build", static_url_path="")
+app = Flask(__name__, static_folder="build", static_url_path="")
 CORS(app)
 
 fn = 'lf_specs.zarr'
@@ -51,7 +51,7 @@ def getUpdate():
     location = request_data['location']
     graphType = request_data['graphType']
     # for Octave Band only
-    f0 = request_data['frequency']
+    f0 = int(request_data['frequency'])
     return getUpdatedGraph(startDate, endDate, graphType, location, f0)
 
 
