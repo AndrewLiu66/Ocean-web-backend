@@ -17,7 +17,7 @@ from flask.helpers import send_from_directory
 
 import holoviews as hv
 
-app = Flask(__name__, static_folder="front-end/build", static_url_path="")
+app = Flask(__name__, static_folder="build", static_url_path="")
 CORS(app)
 
 fn = 'lf_specs.zarr'
