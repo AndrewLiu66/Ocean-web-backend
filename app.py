@@ -18,10 +18,7 @@ CORS(app)
 fn = 'lf_specs.zarr'
 specs = xr.open_dataset(fn)
 
-def fetchData():
 
-
-    
 @app.route('/api', methods=['GET'])
 @cross_origin()
 def index():
