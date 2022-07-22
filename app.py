@@ -1,21 +1,16 @@
-import json
 from graph import getInitGraph
 from graph import getUpdatedGraph
-from flask import Flask, request, Response, send_file, jsonify
+from flask import Flask, request, send_file, jsonify
 from bokeh.embed import json_item
 from flask_cors import CORS, cross_origin
-import requests
 from flask import send_file
-import zipfile
-import io
-import zipfile
-import time
-import base64
 import pandas as pd
 import xarray as xr
 from flask.helpers import send_from_directory
+from download import generateSpectrogramCsvValue
+from download import generateCsvOctave
+from download import generateCsvSPDF
 
-import holoviews as hv
 
 app = Flask(__name__, static_folder="build", static_url_path="")
 CORS(app)
@@ -23,7 +18,10 @@ CORS(app)
 fn = 'lf_specs.zarr'
 specs = xr.open_dataset(fn)
 
+def fetchData():
 
+
+    
 @app.route('/api', methods=['GET'])
 @cross_origin()
 def index():
@@ -62,27 +60,18 @@ def download():
     startDate = request_data['startDate']
     endDate = request_data['endDate']
     location = request_data['location']
+    type = request_data['currType']
+    frequency = request_data['frequency']
     starttime = pd.Timestamp(startDate)
     endtime = pd.Timestamp(endDate)
-    base_data = specs[location]
-    slice_data = base_data.loc[starttime:endtime, :]
-    slice_frame = slice_data.to_dataframe()
-    slice_frame.to_csv("result.csv.zip", compression="zip")
+    slice_data = specs[location].loc[starttime:endtime,:]
 
-    FILEPATH = r"./result.csv.zip"
-    fileobj = io.BytesIO()
-    with zipfile.ZipFile(fileobj, 'w') as zip_file:
-        zip_info = zipfile.ZipInfo(FILEPATH)
-        zip_info.date_time = time.localtime(time.time())[:6]
-        zip_info.compress_type = zipfile.ZIP_DEFLATED
-        with open(FILEPATH, 'rb') as fd:
-            zip_file.writestr(zip_info, fd.read())
-    fileobj.seek(0)
-
-    # Changed line below
-    return Response(fileobj.getvalue(),
-                    mimetype='application/zip',
-                    headers={'Content-Disposition': 'attachment;filename=your_filename.zip'})
+    if type == 'Spectrogram':
+        return generateSpectrogramCsvValue(slice_data)
+    elif type == 'Octave Band':
+        return generateCsvOctave(slice_data, location, frequency)
+    else:
+        return generateCsvSPDF(slice_data)
 
 
 @app.route('/')
