@@ -137,9 +137,8 @@ def get_freq_band(f0, spec):
     return spec_band_mean
 
 
-def generateDfForOctaveBox(f0, location, startDate, endDate):
-    spec_chunk = specs[location].loc[startDate:endDate, :]
-    octave_band_f0 = get_freq_band(f0, spec_chunk)
+def generateDfForOctaveBox(f0, slice_data, location):
+    octave_band_f0 = get_freq_band(f0, slice_data)
     octave_f0_value = octave_band_f0.values.tolist()
     octave_band_f0_time = octave_band_f0.coords['time'].values
     dates_lst = [str(x.astype('datetime64[D]')) for x in octave_band_f0_time]
@@ -149,7 +148,13 @@ def generateDfForOctaveBox(f0, location, startDate, endDate):
 
 
 def generateOctaveGraph(location, startDate, endDate, f0):
-    df_octave = generateDfForOctaveBox(f0, location, startDate, endDate)
+
+
+    starttime = pd.Timestamp(startDate)
+    endtime = pd.Timestamp(endDate)
+    slice_data = specs[location].loc[starttime:endtime,:]
+
+    df_octave = generateDfForOctaveBox(f0, slice_data, location)
     boxplot = df_octave.hvplot.box(y=location, by='date', ylabel=location,
                                    width=900, height=400, legend=False, outlier_color='white')
     boxplot.opts(title="Octave Band", xrotation=90)
