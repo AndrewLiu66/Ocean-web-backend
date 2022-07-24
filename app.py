@@ -61,7 +61,7 @@ def download():
     frequency = request_data['frequency']
     starttime = pd.Timestamp(startDate)
     endtime = pd.Timestamp(endDate)
-    slice_data = specs[location].loc[starttime:endtime,:]
+    slice_data = specs[location].loc[starttime:endtime, :]
 
     if type == 'Spectrogram':
         return generateSpectrogramCsvValue(slice_data)
