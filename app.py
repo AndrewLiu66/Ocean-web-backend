@@ -22,7 +22,7 @@ specs = xr.open_dataset(fn)
 @cross_origin()
 def index():
     return {
-        "tutorial": "Flask React Heroku"
+        "tutorial": "Add new map"
     }
 
 
