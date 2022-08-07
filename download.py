@@ -1,9 +1,10 @@
-from flask import jsonify
+from flask import jsonify, make_response, json
 from graph import generateDfForOctaveBox
 from graph import get_spdf
 import pandas as pd
 import numpy as np
 # helper method
+import gzip
 
 
 def median(df, location):
@@ -31,16 +32,18 @@ def getUpperBound(df, location):
     IQR = Q3 - Q1
     return Q3 + (1.5 * IQR)
 
-# generate method
-
 
 def generateSpectrogramCsvValue(slice_data, location):
     slice_frame = slice_data.to_dataframe()
     slice_frame = slice_frame.reset_index()
-    # slice_frame['time'] = slice_frame['time'].astype(str)
     slice_frame[location] = slice_frame[location].fillna(0)
     slice_dict = slice_frame.to_dict('records')
-    return jsonify({"data": slice_dict})
+    result = {"data": slice_dict}
+    content = gzip.compress(json.dumps(result).encode('utf8'), 5)
+    response = make_response(content)
+    response.headers['Content-length'] = len(content)
+    response.headers['Content-Encoding'] = 'gzip'
+    return response
 
 
 def generateCsvSPDF(spec_slice):
