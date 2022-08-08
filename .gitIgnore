@@ -6,4 +6,3 @@ venv
 *.pyc
 front-end
 __pycache__
-lf_specs.zarr
