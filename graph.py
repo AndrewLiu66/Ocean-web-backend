@@ -38,15 +38,18 @@ def getUpdatedGraph(startDate, endDate, graphType, location, f0=50):
     else:
         return generateOctaveGraph(location, startDate, endDate, f0)
 
-
-def generateSpectrogram(startDate, endDate, location):
+def generateSpectrogramGraph(startDate, endDate, location):
     starttime = pd.Timestamp(startDate)
     endtime = pd.Timestamp(endDate)
     base_data = specs[location]
     data_chunk = base_data.loc[starttime:endtime, :]
     graph = data_chunk.hvplot(
-        x='time', y='frequency', rasterize=True, cmap='jet', width=900, height=400)
+        x='time', y='frequency', rasterize=True, cmap='jet', width=1000, height=500)
     plot = hv.render(graph)
+    return plot
+
+def generateSpectrogram(startDate, endDate, location):
+    plot = generateSpectrogramGraph(startDate, endDate, location)
     jso = json.dumps(json_item(plot))
     return jso
 
@@ -147,18 +150,20 @@ def generateDfForOctaveBox(f0, slice_data, location):
     return ovtave_dataframe
 
 
-def generateOctaveGraph(location, startDate, endDate, f0):
-
-
+def generateOctave(location, startDate, endDate, f0):
     starttime = pd.Timestamp(startDate)
     endtime = pd.Timestamp(endDate)
     slice_data = specs[location].loc[starttime:endtime,:]
-
     df_octave = generateDfForOctaveBox(f0, slice_data, location)
     boxplot = df_octave.hvplot.box(y=location, by='date', ylabel=location,
-                                   width=900, height=400, legend=False, outlier_color='white')
+                                   width=1000, height=500, legend=False, outlier_color='white')
     boxplot.opts(title="Octave Band", xrotation=90)
     plot = hv.render(boxplot)
+    return plot
+
+
+def generateOctaveGraph(location, startDate, endDate, f0):
+    plot = generateOctave(location, startDate, endDate, f0)
     jso = json.dumps(json_item(plot))
     return jso
 
