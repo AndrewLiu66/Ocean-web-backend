@@ -1,6 +1,6 @@
 from graph import getInitGraph
 from graph import getUpdatedGraph
-from flask import Flask, request
+from flask import Flask, request, send_file
 from bokeh.embed import json_item
 from flask_cors import CORS, cross_origin
 from flask import send_file
@@ -10,12 +10,52 @@ from flask.helpers import send_from_directory
 from download import generateSpectrogramCsvValue
 from download import generateCsvOctave
 from download import generateCsvSPDF
+from graph import generateSpectrogramGraph
+from graph import generateOctave
 
+from io import StringIO, BytesIO
+import holoviews as hv
+from bokeh.io.export import get_screenshot_as_png
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
+
+import base64
 app = Flask(__name__, static_folder="build", static_url_path="")
 CORS(app)
 
 fn = 'lf_specs.zarr'
 specs = xr.open_dataset(fn)
+
+
+def serve_pil_image(pil_img):
+    img_io = BytesIO()
+    pil_img.save(img_io, 'png', quality=70)
+    img_io.seek(0)
+    return send_file(img_io, mimetype='blob')
+
+
+@app.route('/api/downloadPng', methods=['POST'])
+@cross_origin()
+def downloadPNG():
+    options = Options()
+    options.headless = True
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    driver.headless=True
+    with app.app_context():
+        request_data = request.get_json()
+        startDate = request_data['startDate']
+        endDate = request_data['endDate']
+        location = request_data['location']
+        graphtype = request_data['currType']
+        frequency = request_data['frequency']
+        if graphtype == 'Spectrogram':
+            plot = generateSpectrogramGraph(startDate, endDate, location)
+        else:
+            plot = generateOctave(location, startDate, endDate, frequency)
+        image = get_screenshot_as_png(plot, width=900, height=400, driver=driver)
+        return serve_pil_image(image)
 
 
 @app.route('/api', methods=['GET'])
