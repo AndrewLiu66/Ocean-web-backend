@@ -15,3 +15,4 @@ def getUpdatedGraph(startDate, endDate, graphType, location, specs, f0=50):
         return generateSPDF(startDate, endDate, location, specs)
     else:
         return generateOctaveGraph(location, startDate, endDate, f0, specs)
+
