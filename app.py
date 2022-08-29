@@ -26,6 +26,7 @@ from CTPgraph import generateCTP
 from CTPgraph import generateCTPgraph
 from CTPgraph import downloadCtdCsv
 
+import base64
 app = Flask(__name__, static_folder="build", static_url_path="")
 CORS(app)
 fn = 'lf_specs.zarr'
@@ -75,7 +76,6 @@ def getUpdate():
 @cross_origin()
 def getUpdateCTD():
     return {}
-
 # ***** DOWNLOAD *****
 # get png of format blob for download
 @app.route('/api/downloadPng', methods=['POST'])
@@ -116,6 +116,10 @@ def download():
             return downloadCtdCsv(location, startDate, endDate)
         type = request_data['currType']
         frequency = request_data['frequency']
+        if request_data['selectedValue'] == 'CTD':
+            return downloadCtpCsv()
+        starttime = pd.Timestamp(startDate)
+        endtime = pd.Timestamp(endDate)
         slice_data = specs[location].loc[starttime:endtime, :]
         if type == 'Spectrogram':
             return generateSpectrogramCsvValue(slice_data, location)
