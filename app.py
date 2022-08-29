@@ -24,15 +24,7 @@ sys.path.insert(0, './SpecGraph')
 
 from CTPgraph import generateCTP
 from CTPgraph import generateCTPgraph
-from CTPgraph import downloadCtpCsv
-
-from io import StringIO, BytesIO
-import holoviews as hv
-from bokeh.io.export import get_screenshot_as_png
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
-
+from CTPgraph import downloadCtdCsv
 
 import base64
 app = Flask(__name__, static_folder="build", static_url_path="")
@@ -80,6 +72,10 @@ def getUpdate():
     f0 = int(request_data['frequency'])
     return getUpdatedGraph(startDate, endDate, graphType, location, specs, f0)
 
+@app.route('/api/getUpdateCtpGraph', methods=['POST'])
+@cross_origin()
+def getUpdateCTD():
+    return {}
 # ***** DOWNLOAD *****
 # get png of format blob for download
 @app.route('/api/downloadPng', methods=['POST'])
@@ -113,7 +109,11 @@ def download():
         request_data = request.get_json()
         startDate = request_data['startDate']
         endDate = request_data['endDate']
+        starttime = pd.Timestamp(startDate)
+        endtime = pd.Timestamp(endDate)
         location = request_data['location']
+        if request_data['selectedValue'] == 'CTD':
+            return downloadCtdCsv(location, startDate, endDate)
         type = request_data['currType']
         frequency = request_data['frequency']
         if request_data['selectedValue'] == 'CTD':

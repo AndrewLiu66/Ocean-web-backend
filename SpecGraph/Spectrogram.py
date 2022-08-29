@@ -34,5 +34,4 @@ def generateSpectrogramCsvValue(slice_data, location):
     slice_frame = slice_frame.reset_index()
     slice_frame[location] = slice_frame[location].fillna(0)
     slice_dict = slice_frame.to_dict('records')
-
     return jsonify({"data": slice_dict})

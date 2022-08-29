@@ -13,13 +13,8 @@ import xarray as xr
 import json
 import re
 
-
 #Generates 2 plots, contour plot & scatter plot next to it
 def generateCTPgraph(location):
-
-    if location not in ['axial_base', 'oregon_offshore', 'oregon_shelf', 'oregon_slope']:
-        location = 'axial_base'
-
     fileName = location + "_2015-01-01_2022-01-01"
     data = pd.read_csv("./CTPgraph/" + fileName + ".csv")
 
@@ -99,7 +94,14 @@ def generateCTP(location):
     graph = generateCTPgraph(location)
     return json.dumps(json_item(graph))
 
-def downloadCtpCsv():
-    df = pd.read_csv('./CTPgraph/axial_base_2015-01-01_2022-01-01.csv')
-    df_dict = df.to_dict('records')
-    return jsonify({"data": df_dict})
+def downloadCtdCsv(location, startDate, endDate):
+    fileName = "./CTPgraph/" + location + '_2015-01-01_2022-01-01.csv'
+    data = pd.read_csv(fileName)
+    dates = pd.date_range(start=startDate, end=endDate)
+    dateColumns = data.columns
+    startIndex = dateColumns.get_loc(startDate)
+    endIndex = dateColumns.get_loc(endDate) + 1
+    dateData = data.iloc[:, startIndex:endIndex]
+    result = dateData.fillna(0)
+    result = result.to_dict('records')
+    return {"data": result}
