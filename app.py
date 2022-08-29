@@ -4,9 +4,9 @@ from flask import Flask, request, send_file
 from flask_cors import CORS, cross_origin
 from flask.helpers import send_from_directory
 from bokeh.io.export import get_screenshot_as_png
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
+# from selenium import webdriver
+# from webdriver_manager.chrome import ChromeDriverManager
+# from selenium.webdriver.chrome.options import Options
 from ImageToBlob import serve_pil_image
 from Spectrogram import generateSpectrogramGraph
 from Spectrogram import generateSpectrogramCsvValue
@@ -81,10 +81,10 @@ def getUpdateCTD():
 @app.route('/api/downloadPng', methods=['POST'])
 @cross_origin()
 def downloadPNG():
-    options = Options()
-    options.headless = True
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-    driver.headless=True
+    # options = Options()
+    # options.headless = True
+    # driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    # driver.headless=True
     with app.app_context():
         request_data = request.get_json()
         startDate = request_data['startDate']
@@ -98,7 +98,8 @@ def downloadPNG():
             plot = generateOctave(location, startDate, endDate, frequency, specs)
         else:
             plot = generateCTPgraph(location)
-        image = get_screenshot_as_png(plot, width=900, height=400, driver=driver)
+        image = get_screenshot_as_png(plot, width=900, height=400)
+        # image = get_screenshot_as_png(plot, width=900, height=400, driver=driver)
         return serve_pil_image(image)
 
 
